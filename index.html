@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapu Kada - Brand App</title>
+
+    <!-- Fonts and Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a1a1a",
+                        "brandBeige": "#e8dfd5",
+                        "brandBlack": "#1a1a1a",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"],
+                        "poppins": ["Poppins", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        /* --- GLOBAL APP STYLES --- */
+        :root {
+            --brand-beige: #e8dfd5;
+            --brand-black: #1a1a1a;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--brand-beige);
+            font-family: 'Public Sans', sans-serif;
+            color: var(--brand-black);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- VIEW CONTROLLER --- */
+        .view-section {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            animation: fadeIn 0.4s ease-out;
+            align-items: center;
+        }
+
+        .view-section.active {
+            display: flex;
+        }
+
+        /* --- SPLASH SCREEN --- */
+        #splashView {
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .splash-logo-container {
+            width: 80%;
+            max-width: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .splash-logo-container:active {
+            transform: scale(0.98);
+        }
+
+        .splash-logo-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            object-fit: contain;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+        }
+
+        .hint-text {
+            color: var(--brand-black);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+            position: absolute;
+            bottom: 40px;
+        }
+
+        /* Fallback Logo Logic */
+        .css-fallback-logo {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        #splashView .css-fallback-logo {
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+        }
+
+        .fallback-s {
+            font-family: serif;
+            /* Modernized serif */
+            font-size: 6rem;
+            line-height: 1;
+            color: var(--brand-black);
+        }
+
+        .fallback-brand {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .fallback-brand b {
+            font-weight: 700;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        .login-wrapper {
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--brand-black);
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--brand-beige);
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .login-sub {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
+
+        /* Blended Input Style - Seamless with theme */
+        .form-input-blended {
+            width: 100%;
+            background: transparent !important;
+            border: none;
+            border-bottom: 1.5px solid rgba(26, 26, 26, 0.2);
+            padding: 16px 0;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            border-radius: 0;
+            letter-spacing: 4px;
+            color: var(--brand-black);
+        }
+
+        .form-input-blended:focus {
+            border-bottom-color: var(--brand-black);
+        }
+
+        .login-label {
+            background: transparent !important;
+            color: var(--brand-black);
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .login-btn-solid {
+            width: 100%;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .login-btn-solid:hover {
+            background: #333;
+        }
+
+        .google-btn-outline {
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(0, 0, 0, 0.6);
+            transition: all 0.3s;
+        }
+
+        .google-btn-outline:hover {
+            background: white;
+            border-color: rgba(0,0,0,0.2);
+        }
+
+        /* Better touch targets for mobile */
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+        .error-shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+            border-color: #ef4444 !important;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* --- POPUP MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-content {
+            background: var(--brand-beige);
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 32px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalSlide 0.3s ease-out;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .qty-btn:active {
+            transform: scale(0.9);
+            background: rgba(0,0,0,0.1);
+        }
+
+        /* Tablet/Mobile sizing */
+        @media (max-width: 480px) {
+            .splash-logo-container {
+                width: 95%;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+                letter-spacing: 3px;
+            }
+
+            .qty-btn {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .modal-content {
+                padding: 24px;
+                border-radius: 24px;
+            }
+        }
+        
+        /* Tactical feedback for all buttons */
+        button:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+
+<body class="bg-brandBeige font-display text-brandBlack antialiased">
+
+    <!-- VIEW 1: SPLASH SCREEN -->
+    <div id="splashView" class="view-section active" onclick="switchView('loginView')">
+        <div class="splash-logo-container">
+            <img src="logo.png" alt="Logo"
+                onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='flex';">
+            <div id="splash-fallback" class="css-fallback-logo">
+                <div class="fallback-s">S</div>
+                <div class="fallback-brand">snapu<b>KADA</b></div>
+            </div>
+        </div>
+        <div class="hint-text">Tap anywhere to enter</div>
+    </div>
+
+    <!-- VIEW 2: LOGIN SCREEN -->
+    <div id="loginView" class="view-section">
+        <div class="login-wrapper relative">
+            <!-- Back Arrow -->
+            <div class="absolute top-8 left-6">
+                <button onclick="switchView('splashView')"
+                    class="material-symbols-outlined text-2xl opacity-50 hover:opacity-100 transition-opacity">arrow_back</button>
+            </div>
+
+            <div class="flex flex-col items-center pt-12">
+                <!-- Logo -->
+                <div class="w-48 h-32 flex items-center justify-center mb-12 overflow-hidden">
+                    <img src="logo.png" alt="Snapu Kada" class="w-full h-full object-contain" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span class="text-xl font-serif opacity-30 hidden" style="font-family: 'Playfair Display', serif;">SNAPU KADA</span>
+                </div>
+
+                <!-- Titles -->
+                <h1 class="font-serif text-5xl tracking-[0.2em] mb-8" style="font-family: 'Playfair Display', serif;">SNAPU KADA</h1>
+                <p class="text-[10px] text-center uppercase tracking-[0.3em] opacity-50 font-medium leading-relaxed max-w-[300px] mb-20">
+                    Welcome back. Please enter your password to access your account.
+                </p>
+
+                <div class="w-full space-y-12">
+                    <!-- Password Field -->
+                    <!-- Password Field Section -->
+                    <div class="relative">
+                        <label class="login-label text-[10px] uppercase tracking-[2px] mb-3 block">Password</label>
+                        <div class="relative">
+                            <input type="password" id="passwordInput" placeholder="........" class="form-input-blended"
+                                onkeypress="if(event.key==='Enter') validateLogin()">
+                            <button onclick="togglePassword()"
+                                class="absolute right-0 top-1/2 -translate-y-1/2 text-black/40 hover:text-black active:scale-90 transition-all bg-transparent">
+                                <span class="material-symbols-outlined text-xl" id="eyeIcon">visibility_off</span>
+                            </button>
+                        </div>
+                        <p id="errorText"
+                            class="text-[10px] text-red-500 mt-2 font-bold uppercase tracking-wider hidden text-center">
+                            Incorrect password</p>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button onclick="validateLogin()" id="loginBtn" class="login-btn-solid">
+                        LOGIN <span class="material-symbols-outlined text-lg">arrow_right_alt</span>
+                    </button>
+
+                    <!-- Forgot Password -->
+                    <div class="text-center">
+                        <a href="#" class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex-1 h-[1px] bg-black/5"></div>
+                        <span class="text-[10px] font-bold opacity-20 uppercase tracking-[0.2em]">or</span>
+                        <div class="flex-1 h-[1px] bg-black/5"></div>
+                    </div>
+
+                    <!-- Google Login -->
+                    <button class="google-btn-outline">
+                        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-4 h-4 grayscale opacity-70" alt="Google">
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-24 pb-8">
+                    <p class="text-[10px] font-bold opacity-40 uppercase tracking-[0.2em]">
+                        Don't have an account? <a href="#" class="text-black opacity-100 underline underline-offset-8">Create One</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 3: HOME/CHECKOUT SCREEN -->
+    <div id="homeView" class="view-section overflow-y-auto">
+        <div
+            class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto border-x border-black/5 bg-brandBeige">
+            <!-- TopAppBar -->
+            <div class="flex items-center p-4 pb-2 justify-between">
+                <div class="text-slate-900 flex size-12 shrink-0 items-center cursor-pointer"
+                    onclick="switchView('loginView')">
+                    <span class="material-symbols-outlined text-2xl">arrow_back</span>
+                </div>
+                <h2 class="text-brandBlack text-sm font-light tracking-widest uppercase flex-1 text-center pr-12">
+                    Checkout</h2>
+            </div>
+
+            <div class="px-4 pt-6 pb-2">
+                <h3 class="text-brandBlack tracking-tight text-2xl font-normal leading-tight">Fill out the form</h3>
+                <p class="text-brandBlack/60 text-xs mt-1 font-light tracking-wide">Complete your order details below
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-6 px-4 py-6">
+                <!-- Name or IG Input -->
+                <label class="flex flex-col w-full">
+                    <p class="text-brandBlack text-xs font-semibold uppercase tracking-widest leading-normal pb-2">Name
+                        or Instagram ID</p>
+                    <div class="relative">
+                        <input id="userName"
+                            class="form-input flex w-full rounded-full text-brandBlack focus:outline-0 focus:ring-1 focus:ring-brandBlack/20 border border-black/10 bg-white/40 h-12 placeholder:text-brandBlack/30 px-6 text-sm font-light transition-all"
+                            placeholder="e.g. @username or Full Name" value="" />
+                    </div>
+                </label>
+
+                <!-- ORDER MODE -->
+                <div class="flex flex-col">
+                    <h3 class="text-brandBlack text-xs font-semibold uppercase tracking-widest leading-normal pb-3">
+                        ORDER</h3>
+                    <div class="flex gap-3">
+                        <button id="instaBtn" onclick="setOrderMode('Instagram')"
+                            class="flex h-10 flex-1 items-center justify-center gap-x-2 rounded-full bg-brandBlack text-brandBeige font-medium shadow-sm transition-all">
+                            <i class="fab fa-instagram text-base"></i>
+                            <p class="text-xs uppercase tracking-wider">Instagram</p>
+                        </button>
+                        <button id="whatsappBtn" onclick="setOrderMode('WhatsApp')"
+                            class="flex h-10 flex-1 items-center justify-center gap-x-2 rounded-full bg-white/40 border border-black/10 text-brandBlack font-medium transition-all">
+                            <i class="fab fa-whatsapp text-base"></i>
+                            <p class="text-xs uppercase tracking-wider">WhatsApp</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Items Chosen List -->
+                <div class="flex flex-col">
+                    <p class="text-brandBlack text-xs font-semibold uppercase tracking-widest leading-normal pb-2">Items
+                        Chosen</p>
+                    <div class="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white/40 p-5">
+                        <!-- Standard Items -->
+                        <div class="flex items-center justify-between border-b border-black/5 pb-3 px-2 -mx-2">
+                            <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                <input type="checkbox" class="item-checkbox rounded-md border-black/20 text-brandBlack focus:ring-brandBlack/30 h-4 w-4" 
+                                       data-id="item1" data-name="A4 Poster" data-price="50" onchange="updateTotal()">
+                                <div class="h-8 w-8 rounded-full bg-brandBlack/5 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-sm">image</span>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900">1. A4 Poster</p>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center bg-black/5 rounded-full p-1">
+                                    <button onclick="changeQty('item1', -1)" class="qty-btn"><span class="material-symbols-outlined text-xs">remove</span></button>
+                                    <span id="qty-item1" class="text-[10px] font-bold w-6 text-center">1</span>
+                                    <button onclick="changeQty('item1', 1)" class="qty-btn"><span class="material-symbols-outlined text-xs">add</span></button>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900 w-12 text-right">₹ 50</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between border-b border-black/5 pb-3 px-2 -mx-2">
+                            <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                <input type="checkbox" class="item-checkbox rounded-md border-black/20 text-brandBlack focus:ring-brandBlack/30 h-4 w-4" 
+                                       data-id="item2" data-name="A5 Poster" data-price="50" onchange="updateTotal()">
+                                <div class="h-8 w-8 rounded-full bg-brandBlack/5 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-sm">photo_size_select_large</span>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900">2. A5 Poster</p>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center bg-black/5 rounded-full p-1">
+                                    <button onclick="changeQty('item2', -1)" class="qty-btn"><span class="material-symbols-outlined text-xs">remove</span></button>
+                                    <span id="qty-item2" class="text-[10px] font-bold w-6 text-center">1</span>
+                                    <button onclick="changeQty('item2', 1)" class="qty-btn"><span class="material-symbols-outlined text-xs">add</span></button>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900 w-12 text-right">₹ 50</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between border-b border-black/5 pb-3 px-2 -mx-2">
+                            <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                <input type="checkbox" class="item-checkbox rounded-md border-black/20 text-brandBlack focus:ring-brandBlack/30 h-4 w-4" 
+                                       data-id="item3" data-name="VR Mall Photobooth" data-price="50" onchange="updateTotal()">
+                                <div class="h-8 w-8 rounded-full bg-brandBlack/5 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-sm">photo_camera</span>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900">3. VR Mall Photobooth</p>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center bg-black/5 rounded-full p-1">
+                                    <button onclick="changeQty('item3', -1)" class="qty-btn"><span class="material-symbols-outlined text-xs">remove</span></button>
+                                    <span id="qty-item3" class="text-[10px] font-bold w-6 text-center">1</span>
+                                    <button onclick="changeQty('item3', 1)" class="qty-btn"><span class="material-symbols-outlined text-xs">add</span></button>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900 w-12 text-right">₹ 50</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between border-b border-black/5 pb-3 px-2 -mx-2">
+                            <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                <input type="checkbox" class="item-checkbox rounded-md border-black/20 text-brandBlack focus:ring-brandBlack/30 h-4 w-4" 
+                                       data-id="item4" data-name="Poloroids" data-price="50" onchange="updateTotal()">
+                                <div class="h-8 w-8 rounded-full bg-brandBlack/5 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-sm">camera_roll</span>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900">4. Poloroids</p>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center bg-black/5 rounded-full p-1">
+                                    <button onclick="changeQty('item4', -1)" class="qty-btn"><span class="material-symbols-outlined text-xs">remove</span></button>
+                                    <span id="qty-item4" class="text-[10px] font-bold w-6 text-center">1</span>
+                                    <button onclick="changeQty('item4', 1)" class="qty-btn"><span class="material-symbols-outlined text-xs">add</span></button>
+                                </div>
+                                <p class="text-xs font-bold text-slate-900 w-12 text-right">₹ 50</p>
+                            </div>
+                        </div>
+
+                        <!-- OFFER Section -->
+                        <div class="mt-4 pt-4 border-t-2 border-dashed border-black/10">
+                            <p
+                                class="text-[10px] font-black uppercase tracking-widest text-red-500 mb-4 bg-red-50 inline-block px-2 py-1 rounded">
+                                OFFER</p>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between px-2 -mx-2">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" class="offer-checkbox rounded-md border-red-200 text-red-500 focus:ring-red-500/30 h-4 w-4" 
+                                               data-id="off1" data-name="A4 Wall Poster (Offer)" data-price="50" onchange="updateTotal()">
+                                        <p class="text-xs font-medium text-black/70">1. A4 Wall Poster</p>
+                                    </label>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center bg-red-50 rounded-full p-1">
+                                            <button onclick="changeQty('off1', -1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">remove</span></button>
+                                            <span id="qty-off1" class="text-[10px] font-bold w-6 text-center text-red-600">1</span>
+                                            <button onclick="changeQty('off1', 1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">add</span></button>
+                                        </div>
+                                        <p class="text-xs font-bold text-black w-12 text-right">₹ 50</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between px-2 -mx-2">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" class="offer-checkbox rounded-md border-red-200 text-red-500 focus:ring-red-500/30 h-4 w-4" 
+                                               data-id="off2" data-name="A5 Wall Poster (Offer)" data-price="30" onchange="updateTotal()">
+                                        <p class="text-xs font-medium text-black/70">2. A5 Wall Poster</p>
+                                    </label>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center bg-red-50 rounded-full p-1">
+                                            <button onclick="changeQty('off2', -1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">remove</span></button>
+                                            <span id="qty-off2" class="text-[10px] font-bold w-6 text-center text-red-600">1</span>
+                                            <button onclick="changeQty('off2', 1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">add</span></button>
+                                        </div>
+                                        <p class="text-xs font-bold text-black w-12 text-right">₹ 30</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between px-2 -mx-2">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" class="offer-checkbox rounded-md border-red-200 text-red-500 focus:ring-red-500/30 h-4 w-4" 
+                                               data-id="off3" data-name="VR Mall Photobooth (Offer)" data-price="25" onchange="updateTotal()">
+                                        <p class="text-xs font-medium text-black/70">3. VR Mall Photobooth</p>
+                                    </label>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center bg-red-50 rounded-full p-1">
+                                            <button onclick="changeQty('off3', -1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">remove</span></button>
+                                            <span id="qty-off3" class="text-[10px] font-bold w-6 text-center text-red-600">1</span>
+                                            <button onclick="changeQty('off3', 1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">add</span></button>
+                                        </div>
+                                        <p class="text-xs font-bold text-black w-12 text-right">₹ 25</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between px-2 -mx-2">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" class="offer-checkbox rounded-md border-red-200 text-red-500 focus:ring-red-500/30 h-4 w-4" 
+                                               data-id="off4" data-name="Poloroids (Offer)" data-price="10" onchange="updateTotal()">
+                                        <p class="text-xs font-medium text-black/70">4. Poloroids</p>
+                                    </label>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center bg-red-50 rounded-full p-1">
+                                            <button onclick="changeQty('off4', -1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">remove</span></button>
+                                            <span id="qty-off4" class="text-[10px] font-bold w-6 text-center text-red-600">1</span>
+                                            <button onclick="changeQty('off4', 1)" class="qty-btn hover:bg-red-100"><span class="material-symbols-outlined text-xs text-red-500">add</span></button>
+                                        </div>
+                                        <p class="text-xs font-bold text-black w-12 text-right">₹ 10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Instructions -->
+                <label class="flex flex-col w-full">
+                    <p class="text-brandBlack text-xs font-semibold uppercase tracking-widest leading-normal pb-2">
+                        Special Instructions</p>
+                    <textarea id="instructions"
+                        class="form-textarea flex w-full rounded-2xl text-brandBlack focus:outline-0 focus:ring-1 focus:ring-brandBlack/20 border border-black/10 bg-white/40 min-h-[100px] placeholder:text-brandBlack/30 p-4 text-sm font-light transition-all"
+                        placeholder="Any special notes?"></textarea>
+                </label>
+            </div>
+
+            <!-- Footer / Order Button -->
+            <div class="mt-auto p-6 border-t border-black/5 bg-brandBeige/95 backdrop-blur-md sticky bottom-0">
+                <div class="flex items-center justify-between mb-4 px-2">
+                    <span class="text-slate-500 font-medium">Estimated Total</span>
+                    <span id="totalDisplay" class="text-2xl font-light text-brandBlack">₹ 0</span>
+                </div>
+                <button onclick="showOrderPopup()"
+                    class="w-full flex h-12 items-center justify-center gap-x-2 rounded-full bg-brandBlack text-brandBeige font-bold shadow-lg active:scale-95 transition-all">
+                    <span class="material-symbols-outlined text-base">shopping_cart_checkout</span>
+                    <p class="text-xs uppercase tracking-widest">Place Order</p>
+                </button>
+                <button onclick="switchView('splashView')"
+                    class="w-full mt-4 text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">Logout</button>
+            </div>
+            <div class="h-6 bg-brandBeige"></div>
+        </div>
+    </div>
+
+    <!-- ORDER POPUP MODAL -->
+    <div id="orderModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-xl font-bold tracking-tight">Order Details</h3>
+                <button onclick="closeOrderPopup()"
+                    class="material-symbols-outlined opacity-40 hover:opacity-100">close</button>
+            </div>
+
+            <div class="space-y-2">
+                <div class="order-detail-row">
+                    <span class="text-xs font-bold uppercase tracking-widest opacity-50">Customer</span>
+                    <span id="popName" class="text-sm font-bold">@username</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="text-xs font-bold uppercase tracking-widest opacity-50">Order Via</span>
+                    <span id="popMode" class="text-sm font-bold">Instagram</span>
+                </div>
+                <div class="pt-6 pb-2">
+                    <p class="text-[10px] font-bold uppercase tracking-[2px] opacity-40 mb-4">Summary</p>
+                    <div id="popSummary" class="bg-black/5 rounded-2xl p-4 text-xs space-y-2 max-h-[150px] overflow-y-auto">
+                        <p class="text-center opacity-40">No items selected</p>
+                    </div>
+                    <div class="flex justify-between font-bold pt-4 px-2 text-sm">
+                        <span>Total Amount</span>
+                        <span id="popTotal">₹ 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="confirmFinalOrder()"
+                class="w-full mt-8 bg-brandBlack text-brandBeige rounded-full py-4 font-bold text-xs uppercase tracking-[3px] shadow-xl active:scale-95 transition-all">
+                CONFIRM ORDER
+            </button>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content text-center">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-4xl">check_circle</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">Order Confirmed!</h3>
+            <p class="text-sm opacity-60 mb-8">Your order has been placed successfully. We will reach out to you shortly.</p>
+            <button onclick="closeSuccessModal()" class="w-full bg-brandBlack text-brandBeige rounded-full py-4 font-bold text-xs uppercase tracking-[3px] shadow-xl active:scale-95 transition-all">
+                CONTINUE SHOPPING
+            </button>
+        </div>
+    </div>
+
+    <!-- APP LOGIC -->
+    <script type="module">
+        import { saveOrder } from "./js/order-save.js";
+
+        let currentOrderMode = 'Instagram';
+        let totalAmount = 0;
+        const itemQuantities = {};
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            if (viewId === 'loginView') {
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').classList.remove('error-shake');
+                document.getElementById('errorText').classList.add('hidden');
+                document.getElementById('loginBtn').innerText = 'LOGIN';
+            }
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerText = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.innerText = 'visibility_off';
+            }
+        }
+
+        function validateLogin() {
+            const input = document.getElementById('passwordInput');
+            const btn = document.getElementById('loginBtn');
+            const error = document.getElementById('errorText');
+
+            input.classList.remove('error-shake');
+            error.classList.add('hidden');
+
+            if (input.value === '2121') {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                setTimeout(() => {
+                    switchView('homeView');
+                }, 800);
+            } else {
+                input.classList.add('error-shake');
+                error.classList.remove('hidden');
+            }
+        }
+
+        function setOrderMode(mode) {
+            currentOrderMode = mode;
+            const insta = document.getElementById('instaBtn');
+            const whatsapp = document.getElementById('whatsappBtn');
+
+            if (mode === 'Instagram') {
+                insta.className = "flex h-10 flex-1 items-center justify-center gap-x-2 rounded-full bg-brandBlack text-brandBeige font-medium shadow-sm transition-all";
+                whatsapp.className = "flex h-10 flex-1 items-center justify-center gap-x-2 rounded-full bg-white/40 border border-black/10 text-brandBlack font-medium transition-all";
+            } else {
+                whatsapp.className = "flex h-10 flex-1 items-center justify-center gap-x-2 rounded-full bg-brandBlack text-brandBeige font-medium shadow-sm transition-all";
+                insta.className = "flex h-10 flex-1 items-center justify-center gap-x-2 rounded-full bg-white/40 border border-black/10 text-brandBlack font-medium transition-all";
+            }
+        }
+
+        function changeQty(id, delta) {
+            if (!itemQuantities[id]) itemQuantities[id] = 1;
+            itemQuantities[id] = Math.max(1, itemQuantities[id] + delta);
+            document.getElementById(`qty-${id}`).innerText = itemQuantities[id];
+            updateTotal();
+        }
+
+        function updateTotal() {
+            const checkboxes = document.querySelectorAll('.item-checkbox, .offer-checkbox');
+            totalAmount = 0;
+            checkboxes.forEach(cb => {
+                const id = cb.getAttribute('data-id');
+                const qty = itemQuantities[id] || 1;
+                if (cb.checked) {
+                    totalAmount += (parseInt(cb.getAttribute('data-price')) * qty);
+                }
+            });
+            document.getElementById('totalDisplay').innerText = `₹ ${totalAmount}`;
+        }
+
+        function showOrderPopup() {
+            const name = document.getElementById('userName').value || 'Visitor';
+            const summaryContainer = document.getElementById('popSummary');
+            const checkboxes = document.querySelectorAll('.item-checkbox, .offer-checkbox');
+            
+            document.getElementById('popName').innerText = name;
+            document.getElementById('popMode').innerText = currentOrderMode;
+            
+            let summaryHtml = '';
+            let selectedCount = 0;
+            
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    const id = cb.getAttribute('data-id');
+                    const qty = itemQuantities[id] || 1;
+                    const price = parseInt(cb.getAttribute('data-price'));
+                    summaryHtml += `<div class="flex justify-between"><span>${cb.getAttribute('data-name')} x${qty}</span><span>₹ ${price * qty}</span></div>`;
+                    selectedCount++;
+                }
+            });
+            
+            if (selectedCount === 0) {
+                summaryHtml = '<p class="text-center opacity-40">No items selected</p>';
+            }
+            
+            summaryContainer.innerHTML = summaryHtml;
+            document.getElementById('popTotal').innerText = `₹ ${totalAmount}`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeOrderPopup() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        async function confirmFinalOrder() {
+            const name = document.getElementById('userName').value || 'Visitor';
+            const instructions = document.getElementById('instructions').value || '';
+            const checkboxes = document.querySelectorAll('.item-checkbox, .offer-checkbox');
+            
+            const selectedItems = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    const id = cb.getAttribute('data-id');
+                    const qty = itemQuantities[id] || 1;
+                    selectedItems.push({
+                        name: cb.getAttribute('data-name'),
+                        quantity: qty,
+                        price: parseInt(cb.getAttribute('data-price'))
+                    });
+                }
+            });
+
+            const orderData = {
+                customer: name,
+                mode: currentOrderMode,
+                items: selectedItems,
+                total: totalAmount,
+                instructions: instructions
+            };
+
+            try {
+                // Save to Firestore using external module
+                await saveOrder(orderData);
+                
+                // UI Feedback
+                document.getElementById('orderModal').style.display = 'none';
+                document.getElementById('successModal').style.display = 'flex';
+            } catch (error) {
+                console.error("Error saving order: ", error);
+                alert("Something went wrong while saving your order. Please check your Firebase configuration.");
+            }
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            // Reset form after success
+            document.getElementById('userName').value = '';
+            document.getElementById('instructions').value = '';
+            document.querySelectorAll('.item-checkbox, .offer-checkbox').forEach(cb => cb.checked = false);
+            Object.keys(itemQuantities).forEach(k => {
+                itemQuantities[k] = 1;
+                if(document.getElementById(`qty-${k}`)) document.getElementById(`qty-${k}`).innerText = '1';
+            });
+            updateTotal();
+            
+            // Explicitly ensure we are on homeView and scroll to top
+            switchView('homeView');
+            document.getElementById('homeView').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Attach functions to window for HTML event handlers
+        window.switchView = switchView;
+        window.togglePassword = togglePassword;
+        window.validateLogin = validateLogin;
+        window.setOrderMode = setOrderMode;
+        window.changeQty = changeQty;
+        window.updateTotal = updateTotal;
+        window.showOrderPopup = showOrderPopup;
+        window.closeOrderPopup = closeOrderPopup;
+        window.confirmFinalOrder = confirmFinalOrder;
+        window.closeSuccessModal = closeSuccessModal;
+    </script>
+    
+</body>
+
+</html>
